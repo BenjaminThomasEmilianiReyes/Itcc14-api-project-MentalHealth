@@ -4,6 +4,7 @@
 > All team members with GitHub profile links. (Must use full name or surname for grading)
 
 - [Reyes, Benjamin Thomas Emiliani](https://github.com/BenjaminThomasEmilianiReyes)
+- [Realisan, James Marco G.](https://github.com/jamesrealisan)
 
 ---
 
