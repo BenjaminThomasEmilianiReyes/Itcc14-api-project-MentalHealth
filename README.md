@@ -6,6 +6,7 @@
 - [Reyes, Benjamin Thomas Emiliani](https://github.com/BenjaminThomasEmilianiReyes)
 - [Realisan, James Marco G.](https://github.com/jamesrealisan)
 - [Mocsana, Mohammad Yusuf T.](https://github.com/MoyMocsana)
+- [paulagwynzellelabadan](https://github.com/paulagwynzellelabadan)
 ---
 
 ## 🧠 Project Title: MindEase – Mental Health Support Platform
