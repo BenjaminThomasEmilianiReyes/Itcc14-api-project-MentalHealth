@@ -5,6 +5,7 @@
 
 - [Reyes, Benjamin Thomas Emiliani](https://github.com/BenjaminThomasEmilianiReyes)
 - [Realisan, James Marco G.](https://github.com/jamesrealisan)
+- [paulagwynzellelabadan](https://github.com/paulagwynzellelabadan)
 
 ---
 
