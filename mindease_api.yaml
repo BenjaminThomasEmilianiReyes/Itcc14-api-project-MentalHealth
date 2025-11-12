@@ -1,1 +1,108 @@
-Valid YAML
+openapi: 3.0.0
+info:
+  title: MindEase API
+  description: >
+    A RESTful API for MindEase — a mental health support platform for students.
+    Provides secure user authentication, mood tracking, self-assessments, and counselor-student forums.
+  version: 1.0.0
+  contact:
+    name: MindEase Dev Team
+    email: support@mindease.app
+
+servers:
+  - url: https://api.mindease.app/v1
+    description: Production Server
+  - url: http://localhost:5000
+    description: Local Development Server
+
+tags:
+  - name: Authentication
+    description: Endpoints for user registration and login
+  - name: Self-Assessment
+    description: Endpoints for retrieving and submitting self-assessment results
+
+paths:
+  /api/register:
+    post:
+      summary: Register a new user
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name: { type: string }
+                email: { type: string, format: email }
+                password: { type: string, format: password }
+                role: { type: string, enum: [student, counselor] }
+      responses:
+        '201':
+          description: User successfully registered
+        '400':
+          description: Invalid input data
+        '409':
+          description: Email already exists
+
+  /api/login:
+    post:
+      summary: Authenticate user and generate access token
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        '200':
+          description: Successful login with JWT token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token: { type: string }
+        '401':
+          description: Invalid credentials
+
+  /api/selfcheck:
+    get:
+      summary: Retrieve available self-assessment questions
+      tags: [Self-Assessment]
+      responses:
+        '200':
+          description: List of self-assessment questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    question_id: { type: integer }
+                    question_text: { type: string }
+
+  /api/results:
+    post:
+      summary: Submit and store self-assessment results
+      tags: [Self-Assessment]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id: { type: integer }
+                score: { type: number }
+                feedback: { type: string }
+      responses:
+        '201':
+          description: Assessment result stored
+        '400':
+          description: Missing or invalid data
