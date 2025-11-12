@@ -12,41 +12,37 @@
 ## 🧠 Project Title: MindEase – Mental Health Support Platform
 
 ### 📖 Context
-MindEase is a web-based platform designed to promote student mental well-being through **self-assessment tools**, **relaxation resources**, and **confidential support channels**.  
-While most mental health platforms focus on front-end design, MindEase emphasizes a **robust backend architecture** to ensure security, data consistency, and seamless integration across all modules.
+MindEase is a web-based platform designed to promote student mental well-being through *self-assessment tools*, *relaxation resources*, and *confidential support channels*.  
+While most mental health platforms emphasize front-end experiences, MindEase focuses on a *robust backend architecture* that ensures security, data consistency, and smooth integration across all modules.
 
 ---
 
 ### ⚙️ Problems / Needs Analysis
-Current student mental health support systems rely on **manual counseling records** and **disconnected communication tools**, resulting in fragmented data and privacy risks.  
-Without a **centralized backend**, schools cannot track trends in student well-being or securely manage counselor–student interactions.  
-MindEase solves this by providing a **Flask-based REST API** with a **MySQL database** backend that enables integration with future apps or institutional dashboards.
+Current student mental health support systems rely on *manual counseling records* and *disconnected communication tools*, leading to fragmented data and privacy risks.  
+Without a *centralized backend*, institutions cannot effectively track trends in student well-being or maintain secure communication between counselors and students.  
+MindEase addresses these issues through a *Flask REST API* and *MySQL database* that support both web and mobile integration.
 
 ---
 
 ### 💡 Solution Overview
-MindEase’s backend architecture provides scalable and secure data management to support multiple front-end clients (web and mobile).
+MindEase’s backend architecture provides a scalable, secure, and maintainable foundation for managing mental health data and support services.
 
-**Key Technical Features:**
-- **Framework:** Flask (Python)
-- **Authentication:** Token-based user access control
-- **API Endpoints:**
-  - `POST /api/register` – Register new users with validation & password hashing  
-  - `POST /api/login` – Authenticate and generate access token  
-  - `GET /api/selfcheck` – Retrieve self-assessment questions  
-  - `POST /api/results` – Submit self-assessment results  
-  - `GET /api/moods`, `POST /api/moods` – Log and view mood entries  
-  - `POST /api/forum` – Counselor-student forum endpoint  
+*Key Technical Features:*
+- *Framework:* Flask (Python)
+- *Database:* MySQL (or SQLite for testing)
+- *Authentication:* Token-based user access control
+- *Documentation:* Postman API Collection
 
-**Database Design:**
-| Table | Fields |
-|--------|--------|
-| users | user_id, name, role, email, password_hash |
-| mood_entries | entry_id, user_id, mood, date_logged |
-| assessments | assessment_id, user_id, score, feedback, date_taken |
-| forum | forum_id, sender_id, forum_role, content, timestamp |
-
-All tables are linked using **foreign keys** to maintain data integrity.
+*Core API Endpoints (Planned):*
+| Method | Endpoint | Description |
+|---------|-----------|-------------|
+| POST | /api/register | Register a new user |
+| POST | /api/login | User login and token generation |
+| GET | /api/selfcheck | Retrieve self-assessment questions |
+| POST | /api/results | Submit and store self-assessment results |
+| GET | /api/moods | Retrieve mood logs |
+| POST | /api/moods | Create new mood entry |
+| POST | /api/forum | Counselor-student forum discussions |
 
 ---
 
