@@ -13,148 +13,152 @@
 
 ### 📖 Context
 MindEase is a web-based platform designed to promote student mental well-being through *self-assessment tools*, *relaxation resources*, and *confidential support channels*.  
-While most mental health platforms emphasize front-end experiences, MindEase focuses on a *robust backend architecture* that ensures security, data consistency, and smooth integration across all modules.
+While most mental health platforms focus on front-end design, MindEase emphasizes a *robust backend architecture* to ensure security, data consistency, and seamless integration across all modules.
 
 ---
 
 ### ⚙️ Problems / Needs Analysis
-Current student mental health support systems rely on *manual counseling records* and *disconnected communication tools*, leading to fragmented data and privacy risks.  
-Without a *centralized backend*, institutions cannot effectively track trends in student well-being or maintain secure communication between counselors and students.  
-MindEase addresses these issues through a *Flask REST API* and *MySQL database* that support both web and mobile integration.
+Current student mental health support systems rely on *manual counseling records* and *disconnected communication tools*, resulting in fragmented data and privacy risks.  
+Without a *centralized backend*, schools cannot track trends in student well-being or securely manage counselor–student interactions.  
+MindEase solves this by providing a *Flask-based RESTful API* with a *MySQL database* backend that enables integration with future apps or institutional dashboards.
 
 ---
 
 ### 💡 Solution Overview
-MindEase’s backend architecture provides a scalable, secure, and maintainable foundation for managing mental health data and support services.
+MindEase’s backend architecture provides scalable and secure data management to support multiple front-end clients (web and mobile).
 
 *Key Technical Features:*
 - *Framework:* Flask (Python)
-- *Database:* MySQL (or SQLite for testing)
 - *Authentication:* Token-based user access control
-- *Documentation:* Postman API Collection
+- *API Endpoints:*
+  - POST /api/register – Register new users with validation & password hashing  
+  - POST /api/login – Authenticate and generate access token  
+  - GET /api/selfcheck – Retrieve self-assessment questions  
+  - POST /api/results – Submit self-assessment results  
+  - GET /api/moods, POST /api/moods – Log and view mood entries  
+  - POST /api/forum – Counselor-student forum endpoint  
 
-*Core API Endpoints (Planned):*
-| Method | Endpoint | Description |
-|---------|-----------|-------------|
-| POST | /api/register | Register a new user |
-| POST | /api/login | User login and token generation |
-| GET | /api/selfcheck | Retrieve self-assessment questions |
-| POST | /api/results | Submit and store self-assessment results |
-| GET | /api/moods | Retrieve mood logs |
-| POST | /api/moods | Create new mood entry |
-| POST | /api/forum | Counselor-student forum discussions |
+*Database Design:*
+| Table | Fields |
+|--------|--------|
+| users | user_id, name, role, email, password_hash |
+| mood_entries | entry_id, user_id, mood, date_logged |
+| assessments | assessment_id, user_id, score, feedback, date_taken |
+| forum | forum_id, sender_id, forum_role, content, timestamp |
+
+All tables are linked using *foreign keys* to maintain data integrity.
 
 ---
 
 ## ## My Project Milestones
 
-### 🗓 *Milestone 1 (Nov Week 1): Project Proposal & Introduction*
-
+### 🗓 Milestone 1 (Nov Week 1): Project Proposal & API Draft
 *What we'll do:*  
-Finalize the “MindEase” project topic, define the problem statement and data models, and create the initial API documentation using Postman.
+Finalize our project topic "MindEase," write the problem statement, define data models, and create an initial API documentation outline.
 
 *Deliverables:*  
 - Updated README.md with Problem Statement and Data Models  
 - ITCC14 Project Document (Chapters 1 & 2)  
-- Initial **Postman collection (MindEase_API.postman_collection.json)** listing all planned endpoints  
+- Initial api.yaml file listing endpoints  
 
 *Checklist:*  
-- [x] Hold team meeting to finalize topic  
-- [x] Write Problem Statement & Data Models  
-- [x] Create Postman API collection (initial endpoints)  
-- [x] Complete Chapters 1–2 of Project Doc  
-- [x] Commit and push all files  
+- [ ] Hold team meeting to finalize topic  
+- [ ] Write Problem Statement & Data Models  
+- [ ] Create api.yaml (initial API endpoints)  
+- [ ] Complete Chapters 1–2 of Project Doc  
+- [ ] Commit and push all files  
 
 ---
 
-### 🗓 *Milestone 2 (Nov Week 2): Backend Setup & Initial Endpoints*
-
+### 🗓 Milestone 2 (Nov Week 2): Backend Setup & Initial Endpoints
 *What we'll do:*  
-Set up the Flask backend with virtual environment and dependencies.  
-Implement register and login endpoints, connect to a database, and document working endpoints in Postman.
+Set up Flask and MySQL. Implement basic register and login endpoints. Begin OpenAPI documentation and start Chapter 3 of the project document.
 
 *Deliverables:*  
-- Flask server running locally  
-- Working */register* and */login* endpoints  
-- Updated Postman API collection with working examples  
-- Chapter 3 (System Design) of ITCC14 Project Document  
+- Flask backend initialized  
+- Working /register and /login endpoints  
+- Updated API documentation (Swagger or YAML)  
+- Chapter 3 (System Design)  
 
 *Checklist:*  
-- [x] Initialize repository and virtual environment  
-- [x] Install Flask, SQLAlchemy, Bcrypt, JWT  
-- [x] Implement /register and /login  
-- [x] Update Postman documentation  
-- [x] Write Chapter 3  
-- [x] Push commits to GitHub  
+- [ ] Initialize repo and virtualenv  
+- [ ] Install Flask and dependencies  
+- [ ] Implement register/login endpoints  
+- [ ] Document endpoints with SwaggerUI  
+- [ ] Push updates to GitHub  
 
 ---
 
-### 🗓 *Milestone 3 (Nov Week 3): Full Backend API Implementation*
-
+### 🗓 Milestone 3 (Nov Week 3): Complete Backend API
 *What we'll do:*  
-Complete all CRUD endpoints (moods, assessments, forum).  
-Add input validation, error handling, and seed sample data for demo.  
-Update and validate the Postman collection to match actual responses.
+Implement all CRUD operations and finalize API routes for moods, assessments, and forum. Add validation and error handling.
 
 *Deliverables:*  
-- Full CRUD API completed  
-- Consistent error handling and validation  
-- Seed data for testing  
-- Updated Postman collection validated against working API  
+- Fully functional CRUD API  
+- Error handling and validation  
+- Seed data for demo  
+- Validated OpenAPI spec  
 
 *Checklist:*  
-- [x] Implement CRUD endpoints for all resources  
-- [x] Add error handling (400/404)  
-- [x] Create seed script for sample data  
-- [x] Validate Postman API responses  
-- [x] Push all backend updates  
+- [ ] All endpoints completed  
+- [ ] Input validation added  
+- [ ] Seed data created  
+- [ ] OpenAPI validated  
+- [ ] Push to GitHub  
 
 ---
 
-### 🗓 *Milestone 4 (Nov Week 4): Frontend Integration*
-
+### 🗓 Milestone 4 (Nov Week 4): Frontend Integration
 *What we'll do:*  
-Develop a simple frontend (HTML, JS, or React) that interacts with the API to display and create mood entries.  
-Handle loading, errors, and prepare demo instructions.
+Create a simple web interface that interacts with the API to log moods and view results. Prepare for presentation.
 
 *Deliverables:*  
-- Frontend integrated with backend  
-- User interface for mood logging and viewing  
-- Instructions in README for running frontend and backend  
+- Frontend connected to backend  
+- Demo-ready interface for mood tracking  
+- Instructions for running app  
 
 *Checklist:*  
-- [ ] Frontend lists mood entries  
-- [ ] Frontend can create new moods  
-- [ ] Frontend handles loading/errors  
-- [ ] Document run instructions in README  
+- [ ] Frontend lists and creates moods  
+- [ ] Handles loading/errors  
+- [ ] Document run steps in README  
 
 ---
 
-### 🗓 *Milestone 5 (Optional, Dec Week 1): Docker Containerization*
-
+### 🗓 Milestone 5 (Optional, Dec Week 1): Docker Containerization
 *What we'll do:*  
-Containerize the backend for easier setup using Docker.  
+Containerize the backend for consistency and easier deployment.
 
 *Deliverables:*  
 - Working Dockerfile  
-- Documentation for building and running container  
+- README instructions for Docker setup  
 
 *Checklist:*  
 - [ ] Dockerfile builds successfully  
 - [ ] App runs in container  
-- [ ] Docker instructions in README  
+- [ ] Document Docker commands  
 
 ---
 
-### 🏁 *Final (Dec Week 2): Presentation & Demo*
-
+### 🏁 Final (Dec Week 2): Presentation & Demo
 *What we'll do:*  
-Present the full MindEase system—backend API, frontend integration, and project documentation.  
+Present the full MindEase project—showing the live API, frontend, and database integration. Explain system purpose and flow.
 
 *Deliverables:*  
-- Presentation slides  
-- Live API + frontend demo  
-- Seed data for testing  
+- Final slides  
+- Live demo / backup video  
+- Complete GitHub repo  
+
+*Checklist:*  
+- [ ] Slides ready  
+- [ ] Demo environment prepared  
+- [ ] Repository finalized  
+
+---
+
+## 📎 Repository Link
+*(To be added after pushing to GitHub)*  
+
+Example: [https://github.com/BenjaminReyes/itcc14-api-project-mindease](https://github.com/BenjaminThomasEmilianiReyes/itcc14-api-project-mindease)
 
 *Checklist:*  
 - [ ] Slides completed  
