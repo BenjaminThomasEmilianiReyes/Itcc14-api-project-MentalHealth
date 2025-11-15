@@ -106,3 +106,46 @@ paths:
           description: Assessment result stored
         '400':
           description: Missing or invalid data
+          
+  /api/moods:
+    get:
+      summary: Retrieve mood logs for the authenticated user
+      tags: [Mood Tracking]
+      responses:
+        '200':
+          description: List of mood entries
+    post:
+      summary: Log a new mood entry
+      tags: [Mood Tracking]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mood: { type: string }
+      responses:
+        '201':
+          description: Mood entry successfully created
+          
+
+  /api/forum:
+    post:
+      summary: Post a message in the counselor-student forum
+      tags: [Forum]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                sender_id: { type: integer }
+                forum_role: { type: string, enum: [student, counselor] }
+                content: { type: string }
+      responses:
+        '201':
+          description: Forum message posted
+        '400':
+          description: Invalid data
