@@ -1,0 +1,118 @@
+{
+  "info": {
+    "name": "MindEase API",
+    "_postman_id": "c66e5df9-3f27-4b13-a89b-12afm00e6df8",
+    "description": "Postman collection for testing the MindEase mental health API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Register User",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Juan Dela Cruz\",\n  \"email\": \"juan@example.com\",\n  \"password\": \"12345\",\n  \"role\": \"student\"\n}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:5000/api/register",
+          "protocol": "http",
+          "host": ["127", "0", "0", "1"],
+          "port": "5000",
+          "path": ["api", "register"]
+        }
+      }
+    },
+    {
+      "name": "Login User",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"juan@example.com\",\n  \"password\": \"12345\"\n}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:5000/api/login",
+          "protocol": "http",
+          "host": ["127", "0", "0", "1"],
+          "port": "5000",
+          "path": ["api", "login"]
+        }
+      }
+    },
+    {
+      "name": "Create Mood Entry",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user_id\": 1,\n  \"mood\": \"Happy\"\n}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:5000/api/moods",
+          "protocol": "http",
+          "host": ["127","0","0","1"],
+          "port": "5000",
+          "path": ["api","moods"]
+        }
+      }
+    },
+    {
+      "name": "List Mood Entries",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:5000/api/moods",
+          "protocol": "http",
+          "host": ["127","0","0","1"],
+          "port": "5000",
+          "path": ["api","moods"]
+        }
+      }
+    },
+    {
+      "name": "Create Forum Post",
+      "request": {
+        "method": "POST",
+        "header": [
+          {"key": "Content-Type","value": "application/json"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sender_id\": 1,\n  \"forum_role\": \"student\",\n  \"content\": \"Today I am feeling okay.\"\n}"
+        },
+        "url": {
+          "raw": "http://127.0.0.1:5000/api/forum",
+          "protocol": "http",
+          "host": ["127","0","0","1"],
+          "port": "5000",
+          "path": ["api","forum"]
+        }
+      }
+    },
+    {
+      "name": "List Forum Posts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://127.0.0.1:5000/api/forum",
+          "protocol": "http",
+          "host": ["127","0","0","1"],
+          "port": "5000",
+          "path": ["api","forum"]
+        }
+      }
+    }
+  ]
+}
