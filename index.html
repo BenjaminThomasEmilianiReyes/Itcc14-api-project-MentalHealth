@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MindEase Frontend</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .card { padding: 15px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; }
+        input, button { padding: 8px; margin-top: 5px; width: 100%; }
+        button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background: #3e8e41; }
+        h2 { color: #444; }
+    </style>
+</head>
+<body>
+
+<h1>MindEase Frontend</h1>
+
+<div class="card">
+    <h2>Login</h2>
+    <input id="email" placeholder="Email">
+    <input id="password" placeholder="Password" type="password">
+    <button onclick="login()">Login</button>
+
+    <p id="login-status"></p>
+</div>
+
+<div class="card">
+    <h2>Create Mood Entry</h2>
+    <input id="mood" placeholder="Your mood...">
+    <button onclick="createMood()">Submit Mood</button>
+    <p id="mood-status"></p>
+</div>
+
+<div class="card">
+    <h2>All Mood Entries</h2>
+    <button onclick="loadMoods()">Load Moods</button>
+    <div id="mood-list"></div>
+</div>
+
+<div class="card">
+    <h2>Create Forum Post</h2>
+    <input id="forum-content" placeholder="Write something...">
+    <button onclick="createForumPost()">Submit Post</button>
+    <p id="forum-status"></p>
+</div>
+
+<div class="card">
+    <h2>Forum Posts</h2>
+    <button onclick="loadForum()">Load Forum</button>
+    <div id="forum-list"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
