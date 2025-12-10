@@ -25,22 +25,30 @@
   </div>
 
   <script>
-    const userId = localStorage.getItem('mindease_user_id');
-    const userRole = localStorage.getItem('mindease_user_role');
-    document.getElementById('welcomeText').innerText = userId
-      ? `User ID: ${userId} — Role: ${userRole || 'N/A'}`
-      : 'You are not logged in.';
+    // --- Authentication Check and Back Button Fix ---
+    const token = sessionStorage.getItem('mindease_token');
+    const userRole = sessionStorage.getItem('mindease_user_role');
+    const username = sessionStorage.getItem('mindease_username');
 
+    if (!token) {
+      // If no token, redirect immediately to login
+      window.location.href = 'index.html';
+    } else {
+      // If logged in, update UI text
+      document.getElementById('welcomeText').innerText = `Welcome, ${username}! (Role: ${userRole})`;
+      
+      // CRITICAL FIX: Replace the history entry so the user can't go "back" to the login page from here
+      history.replaceState(null, '', '/frontend/dashboard.html');
+    }
+
+    // --- Logout Functionality ---
     document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('mindease_token');
-      localStorage.removeItem('mindease_user_id');
-      localStorage.removeItem('mindease_user_role');
+      sessionStorage.removeItem('mindease_token');
+      sessionStorage.removeItem('mindease_user_id');
+      sessionStorage.removeItem('mindease_user_role');
+      sessionStorage.removeItem('mindease_username');
       window.location.href = 'index.html';
     });
-
-    if (!userId) {
-      window.location.href = 'index.html';
-    }
   </script>
 </body>
 </html>
