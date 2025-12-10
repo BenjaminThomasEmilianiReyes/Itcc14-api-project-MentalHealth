@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Forum</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <a href="dashboard.html">← Back to Dashboard</a>
+      <h2>Forum</h2>
+    </header>
+
+    <main>
+      <div class="card">
+        <h3>Post a Message</h3>
+        <textarea id="forumContent" placeholder="Write something..."></textarea>
+        <button id="postForum">Submit Post</button>
+        <p id="forum-msg"></p>
+      </div>
+
+      <div class="card">
+        <h3>All Posts</h3>
+        <button id="loadPosts">Load Posts</button>
+        <div id="postList"></div>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/forum.js"></script>
+</body>
+</html>

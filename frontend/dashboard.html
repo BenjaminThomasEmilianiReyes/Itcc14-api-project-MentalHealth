@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>MindEase Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <h1>MindEase Dashboard</h1>
+      <div>
+        <button id="logoutBtn">Logout</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>Welcome</h2>
+        <p id="welcomeText"></p>
+        <p><a href="moods.html">Go to Mood Tracker</a></p>
+        <p><a href="forum.html">Open Forum</a></p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const userId = localStorage.getItem('mindease_user_id');
+    const userRole = localStorage.getItem('mindease_user_role');
+    document.getElementById('welcomeText').innerText = userId
+      ? `User ID: ${userId} — Role: ${userRole || 'N/A'}`
+      : 'You are not logged in.';
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('mindease_token');
+      localStorage.removeItem('mindease_user_id');
+      localStorage.removeItem('mindease_user_role');
+      window.location.href = 'index.html';
+    });
+
+    if (!userId) {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
