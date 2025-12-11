@@ -38,7 +38,13 @@
       document.getElementById('welcomeText').innerText = `Welcome, ${username}! (Role: ${userRole})`;
       
       // CRITICAL FIX: Replace the history entry so the user can't go "back" to the login page from here
-      history.replaceState(null, '', '/frontend/dashboard.html');
+      history.replaceState(null, '', '/dashboard.html');
+      // Prevent navigating back to login when a token exists
+      window.addEventListener('popstate', (e) => {
+        if (sessionStorage.getItem('mindease_token')) {
+          history.replaceState(null, '', '/dashboard.html');
+        }
+      });
     }
 
     // --- Logout Functionality ---

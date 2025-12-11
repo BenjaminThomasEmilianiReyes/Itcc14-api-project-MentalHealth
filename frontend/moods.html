@@ -15,7 +15,16 @@
     <main>
       <div class="card">
         <h3>New Mood</h3>
-        <input id="moodText" placeholder="How are you feeling?">
+        <p>Select how you feel:</p>
+        <div id="moodButtons">
+          <button class="mood-btn" data-mood="happy">😊</button>
+          <button class="mood-btn" data-mood="sad">😢</button>
+          <button class="mood-btn" data-mood="angry">😡</button>
+          <button class="mood-btn" data-mood="neutral">😐</button>
+          <button class="mood-btn" data-mood="anxious">😰</button>
+          <button class="mood-btn" data-mood="excited">🤩</button>
+        </div>
+        <input type="hidden" id="moodText" value="">
         <button id="submitMood">Submit Mood</button>
         <p id="mood-msg"></p>
       </div>

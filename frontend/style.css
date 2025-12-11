@@ -6,3 +6,9 @@ button { display:block; width:100%; padding:12px; background:#2f8f44; color:#fff
 .container { max-width:900px; margin:20px auto; }
 .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
 a { color:#2f8f44; text-decoration:none; }
+
+/* Mood button styles - override global button width */
+#moodButtons { display:flex; gap:10px; align-items:center; margin:8px 0 12px 0; }
+.mood-btn { display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; font-size:28px; border-radius:8px; border:1px solid #ddd; background:#fff; cursor:pointer; }
+.mood-btn.selected { outline:3px solid rgba(47,143,68,0.2); box-shadow:0 2px 6px rgba(0,0,0,0.08); }
+.mood-row { padding:8px 0; border-bottom:1px solid #f0f0f0; }

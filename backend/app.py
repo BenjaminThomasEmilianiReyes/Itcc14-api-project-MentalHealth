@@ -1,13 +1,16 @@
 import os
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify, make_response, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity, get_jwt
 from flask_cors import CORS
 from datetime import datetime
 import re
 
-app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__))
+frontend_dir = os.path.abspath(os.path.join(basedir, '..', 'frontend'))
+
+app = Flask(__name__, static_folder=frontend_dir, static_url_path='')
 CORS(app)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -20,6 +23,37 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = False
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
+
+# JWT error handlers: return consistent JSON and HTTP codes for common token issues
+@jwt.unauthorized_loader
+def missing_token_callback(error_string):
+    print(f"DEBUG: unauthorized_loader called with: {error_string}")
+    return jsonify(error="Missing or malformed Authorization header"), 401
+
+@jwt.invalid_token_loader
+def invalid_token_callback(error_string):
+    print(f"DEBUG: invalid_token_loader called with: {error_string}")
+    return jsonify(error="Invalid token"), 422
+
+@jwt.expired_token_loader
+def expired_token_callback(jwt_header, jwt_payload):
+    print(f"DEBUG: expired_token_loader called")
+    return jsonify(error="Token has expired"), 401
+
+@jwt.revoked_token_loader
+def revoked_token_callback(jwt_header, jwt_payload):
+    print(f"DEBUG: revoked_token_loader called")
+    return jsonify(error="Token has been revoked"), 401
+
+@jwt.needs_fresh_token_loader
+def needs_fresh_token_callback(jwt_header, jwt_payload):
+    print(f"DEBUG: needs_fresh_token_loader called")
+    return jsonify(error="Fresh token required"), 401
+
+# Optional: convert generic 422 responses to JSON so frontend can handle them
+@app.errorhandler(422)
+def handle_unprocessable_entity(err):
+    return jsonify(error=getattr(err, 'description', 'Unprocessable Entity')), 422
 
 PROFANITY = {
     "badword1", "badword2", "fu", "shit", "asshole", "bastard", "foulword" 
@@ -91,6 +125,27 @@ def validate_email_for_role(email: str, role: str) -> bool:
         return email.lower().endswith('@xu.edu.ph')
     return False
 
+@app.route('/')
+def serve_index():
+    return send_from_directory(frontend_dir, 'index.html')
+
+@app.route('/health')
+def health_check():
+    return jsonify(status="ok"), 200
+
+@app.route('/<path:filename>')
+def serve_static(filename):
+    # Don't serve API routes through the static handler
+    if filename.startswith('api/'):
+        return jsonify(error="Not found"), 404
+    
+    # Try to serve the file from the frontend directory
+    try:
+        return send_from_directory(frontend_dir, filename)
+    except FileNotFoundError:
+        # If file doesn't exist, serve index.html for client-side routing
+        return send_from_directory(frontend_dir, 'index.html')
+
 @app.route('/api/register', methods=['POST'])
 def register():
     data = request.get_json() or {}
@@ -125,10 +180,13 @@ def register():
         password_hash=hashed_pw
     )
 
-    db.session.add(user)
-    db.session.commit()
-
-    return jsonify(message="User registered successfully"), 201
+    try:
+        db.session.add(user)
+        db.session.commit()
+        return jsonify(message="User registered successfully"), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify(error="Registration failed. Please try again with different credentials."), 400
 
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -141,7 +199,7 @@ def login():
     user = User.query.filter((User.email == identifier) | (User.username == identifier)).first()
 
     if user and user.check_password(data['password']):
-        token = create_access_token(identity={'user_id': user.user_id, 'role': user.role})
+        token = create_access_token(identity=str(user.user_id), additional_claims={'user_id': user.user_id, 'role': user.role})
         # Added username to login response so frontend can display it easily
         return jsonify(token=token, user_id=user.user_id, role=user.role, username=user.username), 200
 
@@ -150,11 +208,12 @@ def login():
 @app.route('/api/moods', methods=['POST'])
 @jwt_required()
 def create_mood():
-    identity = get_jwt_identity()
+    claims = get_jwt()
+    user_id_from_token = claims.get('user_id')
     payload = request.get_json() or {}
 
     user_id = payload.get('user_id')
-    if not user_id or int(user_id) != int(identity['user_id']):
+    if not user_id or int(user_id) != int(user_id_from_token):
         return jsonify(error="You can only create moods for your own account"), 403
 
     mood_key = payload.get('mood')
@@ -176,8 +235,8 @@ def create_mood():
 @app.route('/api/moods', methods=['GET'])
 @jwt_required()
 def list_moods():
-    identity = get_jwt_identity()
-    role = identity.get('role')
+    claims = get_jwt()
+    role = claims.get('role')
 
     if role == 'counselor':
         student_id = request.args.get('student_id')
@@ -186,12 +245,19 @@ def list_moods():
         else:
             moods = MoodEntry.query.order_by(MoodEntry.date_logged.desc()).all()
     else:
-        moods = MoodEntry.query.filter_by(user_id=identity['user_id']).order_by(MoodEntry.date_logged.desc()).all()
+        user_id = claims.get('user_id')
+        moods = MoodEntry.query.filter_by(user_id=user_id).order_by(MoodEntry.date_logged.desc()).all()
+
+    # Build user lookup dict to avoid N+1 queries
+    user_ids = set(m.user_id for m in moods)
+    users = {u.user_id: u for u in User.query.filter(User.user_id.in_(user_ids)).all()} if user_ids else {}
 
     result = [
         {
             "entry_id": m.entry_id,
             "user_id": m.user_id,
+            "username": users.get(m.user_id, {}).username if m.user_id in users else "Unknown",
+            "name": users.get(m.user_id, {}).name if m.user_id in users else "Unknown",
             "mood": m.mood,
             "mood_emoji": m.mood_emoji,
             "mood_text": m.mood_text,
@@ -206,8 +272,8 @@ def list_moods():
 @app.route('/api/moods/<int:entry_id>/approve', methods=['POST'])
 @jwt_required()
 def approve_mood(entry_id):
-    identity = get_jwt_identity()
-    role = identity.get('role')
+    claims = get_jwt()
+    role = claims.get('role')
 
     if role != 'counselor':
         return jsonify(error="Only counselors can approve moods"), 403
@@ -226,10 +292,17 @@ def approve_mood(entry_id):
 def list_forum_posts():
     # List all posts for all users
     posts = Forum.query.order_by(Forum.timestamp.desc()).all()
+    
+    # Build user lookup dict to avoid N+1 queries
+    user_ids = set(p.sender_id for p in posts)
+    users = {u.user_id: u for u in User.query.filter(User.user_id.in_(user_ids)).all()} if user_ids else {}
+
     result = [
         {
             "forum_id": p.forum_id,
             "sender_id": p.sender_id,
+            "username": users.get(p.sender_id, {}).username if p.sender_id in users else "Unknown",
+            "name": users.get(p.sender_id, {}).name if p.sender_id in users else "Unknown",
             "forum_role": p.forum_role,
             "content": p.content,
             "timestamp": p.timestamp.isoformat(),
@@ -246,14 +319,14 @@ def list_forum_posts():
 @jwt_required()
 def create_forum_post():
     data = request.get_json() or {}
-    identity = get_jwt_identity()
+    claims = get_jwt()
 
     if not all(k in data for k in ('content',)):
         return jsonify(error="Missing required fields"), 400
 
     post = Forum(
-        sender_id=identity['user_id'],
-        forum_role=identity.get('role', 'student'),
+        sender_id=claims.get('user_id'),
+        forum_role=claims.get('role', 'student'),
         content=data['content']
     )
     db.session.add(post)
@@ -267,8 +340,8 @@ def create_forum_post():
 @jwt_required()
 def reply_to_forum_post(forum_id):
     data = request.get_json() or {}
-    identity = get_jwt_identity()
-    role = identity.get('role')
+    claims = get_jwt()
+    role = claims.get('role')
 
     if role != 'counselor':
         return jsonify(error="Only counselors can reply to forum posts"), 403
@@ -283,7 +356,7 @@ def reply_to_forum_post(forum_id):
 
     reply = ForumReply(
         forum_id=forum_id,
-        replier_id=identity['user_id'],
+        replier_id=claims.get('user_id'),
         content=data['content']
     )
     db.session.add(reply)

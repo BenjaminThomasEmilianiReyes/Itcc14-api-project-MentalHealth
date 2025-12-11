@@ -1,5 +1,19 @@
 const API = "http://127.0.0.1:5000/api";
 
+// Profanity list for client-side validation (matches backend)
+const PROFANITY_LIST = ["badword1", "badword2", "fu", "shit", "asshole", "bastard", "foulword"];
+
+function checkProfanity(text) {
+    if (!text) return false;
+    const textLower = text.toLowerCase().replace(/[^a-z0-9]/g, ' ');
+    for (const word of textLower.split(/\s+/)) {
+        if (PROFANITY_LIST.includes(word)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // Function to handle login process
 async function login() {
     const email = document.getElementById("email").value;
@@ -21,8 +35,8 @@ async function login() {
         sessionStorage.setItem('mindease_user_role', data.role);
         sessionStorage.setItem('mindease_username', data.username);
         
-        // Redirect to dashboard
-        window.location.href = 'dashboard.html';
+        // Redirect to dashboard without adding a history entry (prevents back to login)
+        window.location.replace('dashboard.html');
         
     } else {
         statusMsg.innerText = data.error;
@@ -33,6 +47,49 @@ async function login() {
 // This assumes an element with id="loginBtn" exists and is calling this code
 if (document.getElementById("loginBtn")) {
     document.getElementById("loginBtn").addEventListener('click', login);
+}
+
+
+// Function to handle registration process
+async function register() {
+    const username = document.getElementById("username").value;
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("role").value;
+    const statusMsg = document.getElementById("reg-msg");
+
+    if (!username || !name || !email || !password) {
+        statusMsg.innerText = "All fields are required";
+        return;
+    }
+
+    if (checkProfanity(username)) {
+        statusMsg.innerText = "Username contains disallowed language";
+        return;
+    }
+
+    const res = await fetch(`${API}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, name, email, password, role })
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+        statusMsg.innerText = "Account created! Redirecting to login...";
+        setTimeout(() => {
+            window.location.replace('index.html');
+        }, 1200);
+    } else {
+        statusMsg.innerText = data.error || "Registration failed";
+    }
+}
+
+// Attach register function to the register button on the register page
+if (document.getElementById("registerBtn")) {
+    document.getElementById("registerBtn").addEventListener('click', register);
 }
 
 
